@@ -34,6 +34,12 @@ public class GameplayManager : MonoBehaviour
         GenerateTetromino();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Space))
+            UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
+
     private void UpdateScore()
     {
         switch(lengthDestroyRows)
@@ -170,8 +176,6 @@ public class GameplayManager : MonoBehaviour
     public void GameOver(TetrominoHandler tetromino)
     {
         Debug.Log("NOOB!! Sholat sek kono. Cupu mek oleh sakmene " + score);
-
-        enabled = false;
 
         Destroy(tetrominoContainer.gameObject);
     }
