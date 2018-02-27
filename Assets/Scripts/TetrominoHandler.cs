@@ -9,6 +9,13 @@ public class TetrominoHandler : MonoBehaviour
 
     private float fall = 0.0f;
 
+    private GameplayManager gameplayManager;
+
+    private void Start()
+    {
+        gameplayManager = FindObjectOfType<GameplayManager>();
+    }
+
     private void Update()
     {
         UpdateTetromino();
@@ -41,17 +48,46 @@ public class TetrominoHandler : MonoBehaviour
         switch(command)
         {
             case "Right":
-                transform.position += Vector3.right;
+                MoveHorizontal(Vector3.right);
                 break;
             case "Left":
-                transform.position += Vector3.left;
+                MoveHorizontal(Vector3.left);
                 break;
             case "Down":
-                transform.position += Vector3.down;
+                MoveVertical();
                 break;
             case "Action":
                 transform.Rotate(Vector3.forward * 90);
                 break;
         }
+    }
+
+    private void MoveVertical()
+    {
+        transform.position += Vector3.down;
+
+        if (!IsInvalidPosition())
+            transform.position += Vector3.up;
+    }
+
+    private void MoveHorizontal(Vector3 direction)
+    {
+        transform.position += direction;
+
+        if (!IsInvalidPosition())
+            transform.position += direction * -1;
+    }
+
+    private bool IsInvalidPosition()
+    {
+        foreach (Transform mino in transform)
+        {
+            Vector3 pos = gameplayManager.Round(mino.position);
+
+            if (!gameplayManager.IsTetrominoInsideAGrid(pos))
+                return false;
+        }
+
+        return true;
     }
 }
