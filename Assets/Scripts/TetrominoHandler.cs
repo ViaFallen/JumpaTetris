@@ -7,6 +7,12 @@ public class TetrominoHandler : MonoBehaviour
     [SerializeField]
     private float fallspeed = 1.0f;
 
+    [SerializeField]
+    private bool allowRotation = true;
+
+    [SerializeField]
+    private bool limitRotation = false;
+
     private float fall = 0.0f;
 
     private GameplayManager gameplayManager;
@@ -57,9 +63,28 @@ public class TetrominoHandler : MonoBehaviour
                 MoveVertical();
                 break;
             case "Action":
-                transform.Rotate(Vector3.forward * 90);
+                if (allowRotation)
+                {
+                    ActionLimitRotation(1);
+
+                    if (!IsInvalidPosition())
+                        ActionLimitRotation(-1);
+                }
                 break;
         }
+    }
+
+    private void ActionLimitRotation(int modifier)
+    {
+        if (limitRotation)
+        {
+            if (transform.rotation.eulerAngles.z >= 90)
+                transform.Rotate(Vector3.forward * -90);
+            else
+                transform.Rotate(Vector3.forward * 90);
+        }
+        else
+            transform.Rotate(Vector3.forward * 90 * modifier);
     }
 
     private void MoveVertical()
