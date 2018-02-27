@@ -4,6 +4,26 @@ using UnityEngine;
 
 public class GameplayManager : MonoBehaviour
 {
+    [SerializeField]
+    private int score = 0;
+
+    [SerializeField]
+    private Transform tetrominoContainer;
+
+    [SerializeField]
+    private int scoreOneLine = 40;
+
+    [SerializeField]
+    private int scoreTwoLine = 100;
+
+    [SerializeField]
+    private int scoreThreeLine = 300;
+
+    [SerializeField]
+    private int scoreFourLine = 1200;
+
+    private int lengthDestroyRows = 0;
+
     public static int gridWidth = 10;
     public static int gridHeight = 20;
 
@@ -14,6 +34,27 @@ public class GameplayManager : MonoBehaviour
         GenerateTetromino();
     }
 
+    private void UpdateScore()
+    {
+        switch(lengthDestroyRows)
+        {
+            case 1:
+                score += scoreOneLine;
+                break;
+            case 2:
+                score += scoreTwoLine;
+                break;
+            case 3:
+                score += scoreThreeLine;
+                break;
+            case 4:
+                score += scoreFourLine;
+                break;
+        }
+
+        lengthDestroyRows = 0;
+    }
+
     private bool IsRowFullAt(int y)
     {
         for (int x = 0; x < gridWidth; x++)
@@ -21,6 +62,8 @@ public class GameplayManager : MonoBehaviour
             if (grid[x, y] == null)
                 return false;
         }
+
+        lengthDestroyRows++;
 
         return true;
     }
@@ -101,6 +144,8 @@ public class GameplayManager : MonoBehaviour
                 y--;
             }
         }
+
+        UpdateScore();
     }
 
     public bool IsReactLimitGrid(TetrominoHandler tetromino)
@@ -124,9 +169,11 @@ public class GameplayManager : MonoBehaviour
 
     public void GameOver(TetrominoHandler tetromino)
     {
-        Debug.Log("NOOB!! Sholat sek kono.");
+        Debug.Log("NOOB!! Sholat sek kono. Cupu mek oleh sakmene " + score);
 
         enabled = false;
+
+        Destroy(tetrominoContainer.gameObject);
     }
 
     public Transform GetTransformAtGridPosition(Vector3 pos)
@@ -165,6 +212,7 @@ public class GameplayManager : MonoBehaviour
         GameObject tetromino = (GameObject)Instantiate(Resources.Load(GetRandomTetromino(), typeof(GameObject)),
                                                        new Vector3(5.0f, 18.0f, 0.0f),
                                                        Quaternion.identity);
+        tetromino.transform.SetParent(tetrominoContainer);
     }
 
     public bool IsTetrominoInsideAGrid(Vector3 pos)
