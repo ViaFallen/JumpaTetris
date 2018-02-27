@@ -103,6 +103,32 @@ public class GameplayManager : MonoBehaviour
         }
     }
 
+    public bool IsReactLimitGrid(TetrominoHandler tetromino)
+    {
+        for (int x = 0; x < gridWidth; x++)
+        {
+            foreach (Transform mino in tetromino.transform)
+            {
+                Vector3 pos = Round(mino.position);
+
+                if (pos.y >= gridHeight - 1 &&
+                    !tetromino.isActiveAndEnabled)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public void GameOver(TetrominoHandler tetromino)
+    {
+        Debug.Log("NOOB!! Sholat sek kono.");
+
+        enabled = false;
+    }
+
     public Transform GetTransformAtGridPosition(Vector3 pos)
     {
         if (pos.y > gridHeight - 1)

@@ -101,7 +101,10 @@ public class TetrominoHandler : MonoBehaviour
 
             enabled = false;
 
-            gameplayManager.GenerateTetromino();
+            if (gameplayManager.IsReactLimitGrid(this))
+                gameplayManager.GameOver(this);
+            else
+                gameplayManager.GenerateTetromino();
         }
         else
             gameplayManager.UpdateGrid(this);
