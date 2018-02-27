@@ -14,6 +14,47 @@ public class GameplayManager : MonoBehaviour
         GenerateTetromino();
     }
 
+    private bool IsRowFullAt(int y)
+    {
+        for (int x = 0; x < gridWidth; x++)
+        {
+            if (grid[x, y] == null)
+                return false;
+        }
+
+        return true;
+    }
+
+    private void DestroyRowAt(int y)
+    {
+        for (int x = 0; x < gridWidth; x++)
+        {
+            Destroy(grid[x, y].gameObject);
+
+            grid[x, y] = null;
+        }
+    }
+
+    private void MoveRowDown(int y)
+    {
+        for (int x = 0; x < gridWidth; x++)
+        {
+            if (grid[x,y] != null)
+            {
+                grid[x, y - 1] = grid[x, y];
+                grid[x, y] = null;
+                grid[x, y - 1].position += Vector3.down;
+
+            }
+        }
+    }
+
+    private void MoveAllRowsDown(int y)
+    {
+        for (int i = y; i < gridHeight; i++)
+            MoveRowDown(1);
+    }
+
     private string GetRandomTetromino()
     {
         int val = Random.Range(0, 7);
@@ -45,6 +86,21 @@ public class GameplayManager : MonoBehaviour
         }
 
         return "Prefabs/" + tetrominoName;
+    }
+
+    public void DestroyRow()
+    {
+        for (int y = 0; y < gridHeight; y++)
+        {
+            if (IsRowFullAt(y))
+            {
+                DestroyRowAt(y);
+
+                MoveAllRowsDown(y + 1);
+
+                y--;
+            }
+        }
     }
 
     public Transform GetTransformAtGridPosition(Vector3 pos)
